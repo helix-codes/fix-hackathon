@@ -27,29 +27,23 @@ It demonstrates:
 
 The mocked path remains as an explicit fallback.
 
-It does not require:
-
-- live Eve Frontier production API auth
-- live Discord delivery
-- production wallet connectivity
-- production chain settlement
-
 ## Project Structure
 
 - `src/resource_dashboard`: planner, alerting, POD, and integration modules
 - `tests`: pytest public-interface tests
-- `PRD.md`: current product requirements
-- `PRE_SUBMISSION_CHECKLIST.md`: pre-submission release checklist
-- `DEMO_RUNBOOK.md`: operator guide for the trusted demo path and fallback handling
-- `docs/submission/MVP_FREEZE.md`: scope guardrails for submission mode
-- `docs/submission/SAMPLE_LOCALNET_DASHBOARD_OUTPUT.txt`: captured dashboard artifact
-- `docs/submission/SAMPLE_LOCALNET_MARKETPLACE_OUTPUT.txt`: captured marketplace artifact
-- `log.txt`: project notes and implementation history
+- `world-contracts`: vendored Frontier dependency with submission-specific
+  localnet extensions used by the MVP demo path
 
 ## Environment
 
 The repository currently assumes Python is available locally and that tests are
 run with `pytest`.
+
+The included `world-contracts/` directory is intentionally vendored into this
+submission repo because the MVP depends on local additions for planner resource
+seeding and the localnet snapshot helper. A fresh upstream clone of
+`evefrontier/world-contracts` is not a drop-in replacement for this repo as
+submitted.
 
 The verified command is:
 
@@ -70,6 +64,21 @@ Run a specific file:
 ```bash
 pytest -q tests/test_api_client.py
 ```
+
+## Localnet Bootstrap
+
+If you are running the localnet demo from a fresh clone of this submission
+repo, install the JavaScript dependencies in `world-contracts/` first:
+
+```bash
+cd world-contracts
+pnpm install
+cd ..
+```
+
+The localnet demo path uses the bundled `world-contracts` helper scripts via
+`pnpm exec tsx`, so those dependencies must be present before running the
+planner or marketplace demo commands.
 
 ## Run the Demo
 
@@ -100,23 +109,6 @@ The planner dashboard prints one coherent view showing:
 - matching POD listings by preview-safe metadata
 - the first projected bottleneck
 - the alert outcome
-
-## Demo Narrative
-
-The preferred demo sequence is:
-
-1. load localnet operational intel
-2. inspect feasibility for a selected industry goal
-3. inspect matching POD preview listings for the same goal
-4. inspect the first projected shortage
-5. show the alert outcome
-6. run one POD purchase and premium reveal flow
-
-If localnet is unstable during judging, fall back to the mocked planner path
-and describe the wallet and Discord seams as intentionally non-blocking
-extensions.
-
-For the operator-facing script and fallback wording, see `DEMO_RUNBOOK.md`.
 
 ## Integration Status
 
